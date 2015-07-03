@@ -2,14 +2,13 @@
 Main function.
 */
 
+import std.exception;
 import std.file;
 import std.stdio;
 
 void main(string[] args) {
 
-  if(args.length < 2) {
-    throw new Exception("Too few arguments.");
-  }
+  enforce(args.length > 1, "Too few arguments.");
 
   File f = File(args[1], "r");
   FILE* source = f.getFP();
