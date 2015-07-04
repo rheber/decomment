@@ -1,0 +1,9 @@
+{
+  "clang": {
+    "line": "//",
+    "block_start": "/*",
+    "block_end": "*/",
+    "escape": "\\",
+    "quotes": ["'", "\""]
+  }
+}
