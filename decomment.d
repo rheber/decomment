@@ -22,7 +22,9 @@ main(string[] args) {
   while(!f.eof()) {
     int c = getc(source);
     if(startOfQuote(source, language, c)) {
+      debug(quotes) { printf("\n--Start of quote: %c--\n", c); }
       outputQuote(source, language, c);
+      debug(quotes) { writeln("\n--End of quote--"); }
     } else if(startOfLineComment(source, language, c)) {
       skipLineComment(source);
     } else {
@@ -79,7 +81,7 @@ outputQuote(FILE* source, in JSONValue[string] language, in int start) {
   putchar(start);
   while(true) {
     int c = getc(source);
-    if(c == _F_EOF) {
+    if(c == -1) {
       return;
     }
     putchar(c);
