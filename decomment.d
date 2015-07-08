@@ -106,7 +106,7 @@ skipLineComment(FILE* source) {
       putchar('\n');
       return;
     }
-    if(c == _F_EOF) {
+    if(c == -1) {
       return;
     }
   }
