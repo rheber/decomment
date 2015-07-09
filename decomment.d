@@ -10,18 +10,11 @@ import std.stdio;
 import comments;
 import quotes;
 
+/*
+Print a source file without its comments.
+*/
 void
-main(string[] args) {
-
-  enforce(args.length > 1, "Too few arguments.");
-
-  File f = File(args[1], "r");
-  FILE* source = f.getFP();
-
-  JSONValue j = parseJSON(readText("language.json"));
-  // TODO: Pick language based on extension.
-  JSONValue[string] language = j["clang"].object();
-
+outputSource(FILE* source, JSONValue[string] language) {
   while(true) {
     int c = getc(source);
     if(c == -1) {
@@ -39,5 +32,16 @@ main(string[] args) {
       putchar(c);
     }
   }
+}
 
+void
+main(string[] args) {
+
+  enforce(args.length > 1, "Too few arguments.");
+
+  File f = File(args[1], "r");
+  JSONValue j = parseJSON(readText("language.json"));
+
+  // TODO: Pick language based on extension.
+  outputSource(f.getFP(), j["clang"].object());
 }
