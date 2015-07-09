@@ -19,8 +19,11 @@ main(string[] args) {
   // TODO: Pick language based on extension.
   JSONValue[string] language = j["clang"].object();
 
-  while(!f.eof()) {
+  while(true) {
     int c = getc(source);
+    if(c == -1) {
+      return;
+    }
     if(startOfQuote(source, language, c)) {
       debug(quotes) { printf("\n--Start of quote: %c--\n", c); }
       outputQuote(source, language, c);
