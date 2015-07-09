@@ -10,6 +10,21 @@ import std.stdio;
 import comments;
 import quotes;
 
+unittest {
+  JSONValue j = parseJSON(readText("language.json"));
+  File tmp = File("test/temp", "w+");
+  FILE* t = tmp.getFP();
+
+  // clang
+  File f = File("test/in.c", "r");
+  outputSource(f.getFP(), j["clang"].object(), t);
+  tmp.flush();
+  assert(readText("test/temp") == readText("test/out.c"));
+
+  tmp.close();
+  std.file.remove("test/temp");
+}
+
 /*
 Print a source file without its comments.
 */

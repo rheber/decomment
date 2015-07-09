@@ -27,7 +27,7 @@ void
 outputQuote(FILE* source, in JSONValue[string] language, in int start, FILE* dst) {
   bool escaped = false;
 
-  putchar(start);
+  putc(start, dst);
   while(true) {
     int c = getc(source);
     if(c == -1) {
