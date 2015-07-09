@@ -7,6 +7,9 @@ import std.file;
 import std.json;
 import std.stdio;
 
+import comments;
+import quotes;
+
 void
 main(string[] args) {
 
@@ -37,102 +40,4 @@ main(string[] args) {
     }
   }
 
-}
-
-/*
-Check if the given character starts a quote.
-*/
-bool
-startOfQuote(FILE* source, in JSONValue[string] language, in int c) {
-  foreach(JSONValue j; language["quotes"].array()) {
-    if(c == j.str()[0]) { // Works if quote sequences are one character long.
-      return true;
-    }
-  }
-  return false;
-}
-
-/*
-Check for the start of a comment.
-Currently assumes sequences are two characters long.
-*/
-bool
-startOfComment(FILE* source, in string commentSequence, in int first) {
-  if(first != commentSequence[0]) {
-    return false;
-  }
-  int c = getc(source);
-  if(c == commentSequence[1]) {
-    return true;
-  }
-  // At this point we know it's not a comment.
-  if(c != _F_EOF) {
-    ungetc(c, source);
-  }
-  return false;
-}
-
-/*
-Print to the end of a quote.
-Assumes escape and quote sequences are one character long and
-quotes begin and end with the same character.
-*/
-void
-outputQuote(FILE* source, in JSONValue[string] language, in int start) {
-  bool escaped = false;
-
-  putchar(start);
-  while(true) {
-    int c = getc(source);
-    if(c == -1) {
-      return;
-    }
-    putchar(c);
-    if(c == language["escape"].str()[0]) {
-      escaped = true;
-    } else if(c == start && !escaped) {
-      return;
-    } else {
-      escaped = false;
-    }
-  }
-}
-
-/*
-Skip to the end of the line.
-*/
-void
-skipLineComment(FILE* source) {
-  while(true) {
-    int c = getc(source);
-    if(c == '\n') {
-      putchar('\n');
-      return;
-    }
-    if(c == -1) {
-      return;
-    }
-  }
-}
-
-/*
-Skip to the end of the block comment.
-*/
-void
-skipBlockComment(FILE* source, in string endCommentSequence) {
-  while(true) {
-    int c = getc(source);
-    if(c == -1) {
-      return;
-    }
-    if(c == endCommentSequence[0]) {
-      c = getc(source);
-      if(c == endCommentSequence[1]) {
-        putchar(' '); // Allows block comments to separate tokens.
-        return;
-      } else if(c != -1) {
-        ungetc(c, source);
-      }
-    }
-  }
 }
