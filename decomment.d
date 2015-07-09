@@ -25,8 +25,10 @@ main(string[] args) {
       debug(quotes) { printf("\n--Start of quote: %c--\n", c); }
       outputQuote(source, language, c);
       debug(quotes) { writeln("\n--End of quote--"); }
-    } else if(startOfLineComment(source, language, c)) {
+    } else if(startOfComment(source, language["line"].str(), c)) {
       skipLineComment(source);
+    } else if(startOfComment(source, language["block_start"].str(), c)) {
+      skipBlockComment(source, language["block_end"].str());
     } else {
       putchar(c);
     }
@@ -48,13 +50,11 @@ startOfQuote(FILE* source, in JSONValue[string] language, in int c) {
 }
 
 /*
-Check for the start of a line comment.
+Check for the start of a comment.
 Currently assumes sequences are two characters long.
 */
 bool
-startOfLineComment(FILE* source, in JSONValue[string] language, in int first) {
-  string commentSequence = language["line"].str();
-
+startOfComment(FILE* source, in string commentSequence, in int first) {
   if(first != commentSequence[0]) {
     return false;
   }
@@ -62,7 +62,7 @@ startOfLineComment(FILE* source, in JSONValue[string] language, in int first) {
   if(c == commentSequence[1]) {
     return true;
   }
-  // At this point we know it's not a line comment.
+  // At this point we know it's not a comment.
   if(c != _F_EOF) {
     ungetc(c, source);
   }
@@ -108,6 +108,28 @@ skipLineComment(FILE* source) {
     }
     if(c == -1) {
       return;
+    }
+  }
+}
+
+/*
+Skip to the end of the block comment.
+*/
+void
+skipBlockComment(FILE* source, in string endCommentSequence) {
+  while(true) {
+    int c = getc(source);
+    if(c == -1) {
+      return;
+    }
+    if(c == endCommentSequence[0]) {
+      c = getc(source);
+      if(c == endCommentSequence[1]) {
+        putchar(' '); // Allows block comments to separate tokens.
+        return;
+      } else if(c != -1) {
+        ungetc(c, source);
+      }
     }
   }
 }
