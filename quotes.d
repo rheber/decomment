@@ -24,7 +24,7 @@ Assumes escape and quote sequences are one character long and
 quotes begin and end with the same character.
 */
 void
-outputQuote(FILE* source, in JSONValue[string] language, in int start) {
+outputQuote(FILE* source, in JSONValue[string] language, in int start, FILE* dst) {
   bool escaped = false;
 
   putchar(start);
@@ -33,7 +33,7 @@ outputQuote(FILE* source, in JSONValue[string] language, in int start) {
     if(c == -1) {
       return;
     }
-    putchar(c);
+    putc(c, dst);
     if(c == language["escape"].str()[0]) {
       escaped = true;
     } else if(c == start && !escaped) {

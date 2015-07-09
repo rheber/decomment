@@ -14,7 +14,8 @@ import quotes;
 Print a source file without its comments.
 */
 void
-outputSource(FILE* source, JSONValue[string] language) {
+outputSource(FILE* source, JSONValue[string] language,
+    FILE* dst = core.stdc.stdio.stdout) {
   while(true) {
     int c = getc(source);
     if(c == -1) {
@@ -22,14 +23,14 @@ outputSource(FILE* source, JSONValue[string] language) {
     }
     if(startOfQuote(source, language, c)) {
       debug(quotes) { printf("\n--Start of quote: %c--\n", c); }
-      outputQuote(source, language, c);
+      outputQuote(source, language, c, dst);
       debug(quotes) { writeln("\n--End of quote--"); }
     } else if(startOfComment(source, language["line"].str(), c)) {
-      skipLineComment(source);
+      skipLineComment(source, dst);
     } else if(startOfComment(source, language["block_start"].str(), c)) {
-      skipBlockComment(source, language["block_end"].str());
+      skipBlockComment(source, language["block_end"].str(), dst);
     } else {
-      putchar(c);
+      putc(c, dst);
     }
   }
 }

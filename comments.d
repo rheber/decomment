@@ -28,11 +28,11 @@ startOfComment(FILE* source, in string commentSequence, in int first) {
 Skip to the end of the line.
 */
 void
-skipLineComment(FILE* source) {
+skipLineComment(FILE* source, FILE* dst) {
   while(true) {
     int c = getc(source);
     if(c == '\n') {
-      putchar('\n');
+      putc('\n', dst);
       return;
     }
     if(c == -1) {
@@ -45,7 +45,7 @@ skipLineComment(FILE* source) {
 Skip to the end of the block comment.
 */
 void
-skipBlockComment(FILE* source, in string endCommentSequence) {
+skipBlockComment(FILE* source, in string endCommentSequence, FILE* dst) {
   while(true) {
     int c = getc(source);
     if(c == -1) {
@@ -54,7 +54,7 @@ skipBlockComment(FILE* source, in string endCommentSequence) {
     if(c == endCommentSequence[0]) {
       c = getc(source);
       if(c == endCommentSequence[1]) {
-        putchar(' '); // Allows block comments to separate tokens.
+        putc(' ', dst); // Allows block comments to separate tokens.
         return;
       } else if(c != -1) {
         ungetc(c, source);
