@@ -1,7 +1,12 @@
-char c = 'c'; //test '
-// test '\
-char n = '\n';
+/*c test*/
+void
+main(){
+  char c = 'c'; //test '
+  // test '\
+  char n = '\n';
+  char q = '\'';
 
-char*/*test "*/ahoy = "ahoy world!"; /*
+  char*/*test "*/ahoy = "ahoy world!"; /*
 test "\
-*/ char* again = "\nahoy again!\n";
+*/char* again = "\n\"ahoy again!\"";
+}

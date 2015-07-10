@@ -1,5 +1,10 @@
-char c = 'c'; 
+ 
+void
+main(){
+  char c = 'c'; 
+  
+  char n = '\n';
+  char q = '\'';
 
-char n = '\n';
-
-char* ahoy = "ahoy world!";   char* again = "\nahoy again!\n";
+  char* ahoy = "ahoy world!";  char* again = "\n\"ahoy again!\"";
+}
