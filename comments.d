@@ -6,12 +6,15 @@ import std.stdio;
 
 /*
 Check for the start of a comment.
-Currently assumes sequences are two characters long.
+Currently assumes sequences are one or two characters long.
 */
 bool
 startOfComment(FILE* source, in string commentSequence, in int first) {
   if(first != commentSequence[0]) {
     return false;
+  }
+  if(commentSequence.length == 1) {
+    return true;
   }
   int c = getc(source);
   if(c == commentSequence[1]) {

@@ -79,6 +79,6 @@ main(string[] args) {
   File f = File(args[1], "r");
   JSONValue j = parseJSON(readText("language.json"));
 
-  // TODO: Pick language based on extension.
-  outputSource(f.getFP(), j["clang"].object());
+  // #TODO: Make "clang" default language".
+  outputSource(f.getFP(), j["python"].object());
 }
