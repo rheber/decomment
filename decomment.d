@@ -2,6 +2,7 @@
 Main function.
 */
 
+import std.algorithm.searching;
 import std.exception;
 import std.file;
 import std.json;
@@ -13,13 +14,21 @@ import quotes;
 unittest {
   JSONValue j = parseJSON(readText("language.json"));
   File tmp = File("test/temp", "w+");
+  tmp.setvbuf(0, _IONBF); // No need to flush after every write.
   FILE* t = tmp.getFP();
+  File f;
 
   // clang
-  File f = File("test/in.c", "r");
+  f = File("test/in.c", "r");
   outputSource(f.getFP(), j["clang"].object(), t);
-  tmp.flush();
-  assert(readText("test/temp") == readText("test/out.c"));
+  assert(startsWith(readText("test/temp"), readText("test/out.c")));
+  tmp.rewind();
+
+  // python
+  f = File("test/in.py", "r");
+  outputSource(f.getFP(), j["python"].object(), t);
+  assert(startsWith(readText("test/temp"), readText("test/out.py")));
+  tmp.rewind();
 
   tmp.close();
   std.file.remove("test/temp");
