@@ -6,6 +6,7 @@ import std.algorithm.searching;
 import std.exception;
 import std.file;
 import std.json;
+import std.path;
 import std.stdio;
 
 import comments;
@@ -37,6 +38,19 @@ unittest {
 struct DelegatePair {
   bool delegate(int) key;
   void delegate(int) value;
+}
+
+/*
+Map extensions to languages.
+*/
+string
+sourceLanguage(string filename) {
+  string ext = extension(filename);
+  JSONValue j = parseJSON(readText("extensions.json"));
+  if(ext in j.object()) {
+    return j[ext].str();
+  }
+  return "clang";
 }
 
 /*
@@ -88,6 +102,5 @@ main(string[] args) {
   File f = File(args[1], "r");
   JSONValue j = parseJSON(readText("language.json"));
 
-  // #TODO: Make "clang" default language".
-  outputSource(f.getFP(), j["python"].object());
+  outputSource(f.getFP(), j[sourceLanguage(args[1])].object());
 }
