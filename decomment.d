@@ -16,19 +16,17 @@ unittest {
   File tmp = File("test/temp", "w+");
   tmp.setvbuf(0, _IONBF); // No need to flush after every write.
   FILE* t = tmp.getFP();
-  File f;
 
-  // clang
-  f = File("test/in.c", "r");
-  outputSource(f.getFP(), j["clang"].object(), t);
-  assert(startsWith(readText("test/temp"), readText("test/out.c")));
-  tmp.rewind();
-
-  // python
-  f = File("test/in.py", "r");
-  outputSource(f.getFP(), j["python"].object(), t);
-  assert(startsWith(readText("test/temp"), readText("test/out.py")));
-  tmp.rewind();
+  void
+  testLanguage(in string ext) {
+    File f = File(setExtension("test/in", ext), "r");
+    outputSource(f.getFP(), j[sourceLanguage(ext)].object(), t);
+    assert(startsWith(readText("test/temp"),
+        readText(setExtension("test/out", ext))));
+    tmp.rewind();
+  }
+  testLanguage(".c"); // clang
+  testLanguage(".py"); // python
 
   tmp.close();
   std.file.remove("test/temp");
@@ -38,13 +36,12 @@ unittest {
 Map extensions to languages.
 */
 string
-sourceLanguage(string filename) {
-  string ext = extension(filename);
+sourceLanguage(in string ext) {
   JSONValue j = parseJSON(readText("extensions.json"));
   if(ext in j.object()) {
     return j[ext].str();
   }
-  return "clang";
+  return "clang"; // Assume part of C family by default.
 }
 
 void
@@ -54,5 +51,6 @@ main(string[] args) {
   File f = File(args[1], "r");
   JSONValue j = parseJSON(readText("language.json"));
 
-  outputSource(f.getFP(), j[sourceLanguage(args[1])].object());
+  string ext = extension(args[1]);
+  outputSource(f.getFP(), j[sourceLanguage(ext)].object());
 }
