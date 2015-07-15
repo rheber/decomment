@@ -21,21 +21,22 @@ outputSource(FILE* source, JSONValue[string] language,
   }
   DelegatePair[] actions;
 
-  if("quotes" in language) { // The language has typical quotes.
-    auto k = (int c)=>startOfQuote(source, language, c);
-    auto v = (int c)=>outputQuote(source, language, c, dst);
-    actions ~= DelegatePair(k, v);
+  void
+  possiblyAddAction(string feature, bool delegate(int) k, void delegate(int) v) {
+    if(feature in language) {
+      actions ~= DelegatePair(k, v);
+    }
   }
-  if("line" in language) { // The language has line comments.
-    auto k = (int c)=>startOfComment(source, language["line"].str(), c);
-    auto v = (int c)=>skipLineComment(source, dst);
-    actions ~= DelegatePair(k, v);
-  }
-  if("block_start" in language) { // The language has block comments.
-    auto k = (int c)=>startOfComment(source, language["block_start"].str(), c);
-    auto v = (int c)=>skipBlockComment(source, language["block_end"].str(), dst);
-    actions ~= DelegatePair(k, v);
-  }
+
+  possiblyAddAction("quotes", // The language has typical quotes.
+    (int c)=>startOfQuote(source, language, c),
+    (int c)=>outputQuote(source, language, c, dst));
+  possiblyAddAction("line", // The language has line comments.
+    (int c)=>startOfComment(source, language["line"].str(), c),
+    (int c)=>skipLineComment(source, dst));
+  possiblyAddAction("block_start", // The language has block comments.
+    (int c)=>startOfComment(source, language["block_start"].str(), c),
+    (int c)=>skipBlockComment(source, language["block_end"].str(), dst));
   // By default, print the character.
   actions ~= DelegatePair((int c)=>true, (int c)=> cast(void)putc(c, dst));
 
