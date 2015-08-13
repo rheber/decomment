@@ -4,9 +4,15 @@ main(){
   char c = 'c'; //test '
   // test '\
   char n = '\n';
-  char q = '\'';
+  char qd = '"';
+  char qs = '\'';
+  char s = '/';
+
+// # python comment
 
   char*/*test "*/ahoy = "ahoy world!"; /*
 test "\
-*/char* again = "\n\"ahoy again!\"";
+*/char* again = "\n\"'ello again!\"";
 }
+
+// end of test

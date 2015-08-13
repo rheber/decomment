@@ -4,7 +4,13 @@ main(){
   char c = 'c'; 
   
   char n = '\n';
-  char q = '\'';
+  char qd = '"';
+  char qs = '\'';
+  char s = '/';
 
-  char* ahoy = "ahoy world!";  char* again = "\n\"ahoy again!\"";
+
+
+  char* ahoy = "ahoy world!";  char* again = "\n\"'ello again!\"";
 }
+
+
