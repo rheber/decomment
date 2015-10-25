@@ -28,6 +28,9 @@ outputSource(FILE* source, JSONValue[string] language,
     }
   }
 
+  possiblyAddAction("trip", // The language has Pythonic triple quotes.
+    (int c)=>startOfTrip(source, language, c),
+    (int c)=>outputTrip(source, language, c, dst));
   possiblyAddAction("quotes", // The language has typical quotes.
     (int c)=>startOfQuote(source, language, c),
     (int c)=>outputQuote(source, language, c, dst));

@@ -6,6 +6,12 @@ b = "#"
 c = '''#'''
 d = """#"""
 
+# test quoting quotes
+a = '"'
+b = "'"
+c = '''"'''
+d = """'"""
+
 # test escapes
 a = '\'ahoy!\''
 b = "\"ahoy!\""

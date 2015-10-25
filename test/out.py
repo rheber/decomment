@@ -1,10 +1,16 @@
 
 
 
-a = 'a'
-b = "b"
-c = '''c'''
-d = """d"""
+a = '#'
+b = "#"
+c = '''#'''
+d = """#"""
+
+
+a = '"'
+b = "'"
+c = '''"'''
+d = """'"""
 
 
 a = '\'ahoy!\''
@@ -13,5 +19,9 @@ c = '''\nahoy!'''
 d = """\nahoy!"""
 
 
-a = '''bob's your uncle'''
-b = """bob"s your uncle"""
+
+
+a = '''bob'syour uncle'''
+b = """bob"syour uncle"""
+
+
