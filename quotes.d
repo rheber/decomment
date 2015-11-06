@@ -1,47 +1,9 @@
 /*
-Functions to check and process quotes.
+Functions to process quotes.
 */
 
 import std.json;
 import std.stdio;
-
-/*
-Check if the given character starts a quote.
-*/
-bool
-startOfQuote(FILE* source, in JSONValue[string] language, in int c) {
-  foreach(JSONValue j; language["quotes"].array()) {
-    if(c == j.str()[0]) { // Works if quote sequences are one character long.
-      return true;
-    }
-  }
-  return false;
-}
-
-/*
-Check if the next three characters start a Pythonic triple quote.
-Assumes all three characters in the sequence are equal.
-*/
-bool
-startOfTrip(FILE* src, in JSONValue[string] language, in int c) {
-  foreach(JSONValue j; language["trip"].array()) {
-    if(c == j.str()[0]) {
-      // Now check if the next two characters match c.
-      int c2 = getc(src);
-      int c3 = getc(src);
-      if(c == c2 && c == c3) {
-        return true;
-      }
-      if(c3 != _F_EOF) {
-        ungetc(c3, src);
-      }
-      if(c2 != _F_EOF) {
-        ungetc(c2, src);
-      }
-    }
-  }
-  return false;
-}
 
 /*
 Print to the end of a quote.

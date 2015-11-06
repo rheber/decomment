@@ -1,39 +1,16 @@
 /*
-Functions to check and process quotes.
+Functions to process comments.
 */
 
 import std.stdio;
 
 /*
-Check for the start of a comment.
-Currently assumes sequences are one or two characters long.
-*/
-bool
-startOfComment(FILE* source, in string commentSequence, in int first) {
-  if(first != commentSequence[0]) {
-    return false;
-  }
-  if(commentSequence.length == 1) {
-    return true;
-  }
-  int c = getc(source);
-  if(c == commentSequence[1]) {
-    return true;
-  }
-  // At this point we know it's not a comment.
-  if(c != _F_EOF) {
-    ungetc(c, source);
-  }
-  return false;
-}
-
-/*
 Skip to the end of the line.
 */
 void
-skipLineComment(FILE* source, FILE* dst) {
+skipLineComment(FILE* src, FILE* dst) {
   while(true) {
-    int c = getc(source);
+    int c = getc(src);
     if(c == '\n') {
       putc('\n', dst);
       return;
@@ -48,19 +25,19 @@ skipLineComment(FILE* source, FILE* dst) {
 Skip to the end of the block comment.
 */
 void
-skipBlockComment(FILE* source, in string endCommentSequence, FILE* dst) {
+skipBlockComment(FILE* src, in string endCommentSequence, FILE* dst) {
   while(true) {
-    int c = getc(source);
+    int c = getc(src);
     if(c == -1) {
       return;
     }
     if(c == endCommentSequence[0]) {
-      c = getc(source);
+      c = getc(src);
       if(c == endCommentSequence[1]) {
         putc(' ', dst); // Allows block comments to separate tokens.
         return;
       } else if(c != -1) {
-        ungetc(c, source);
+        ungetc(c, src);
       }
     }
   }

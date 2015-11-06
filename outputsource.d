@@ -6,13 +6,14 @@ import std.json;
 import std.stdio;
 
 import comments;
+import matchseq;
 import quotes;
 
 /*
 Print a source file without its comments.
 */
 void
-outputSource(FILE* source, JSONValue[string] language,
+outputSource(FILE* src, JSONValue[string] language,
     FILE* dst = core.stdc.stdio.stdout) {
 
   struct DelegatePair {
@@ -29,22 +30,22 @@ outputSource(FILE* source, JSONValue[string] language,
   }
 
   possiblyAddAction("trip", // The language has Pythonic triple quotes.
-    (int c)=>startOfTrip(source, language, c),
-    (int c)=>outputTrip(source, language, c, dst));
+    (int c)=>matchAnySequence(src, language["trip"].array(), c),
+    (int c)=>outputTrip(src, language, c, dst));
   possiblyAddAction("quotes", // The language has typical quotes.
-    (int c)=>startOfQuote(source, language, c),
-    (int c)=>outputQuote(source, language, c, dst));
+    (int c)=>matchAnySequence(src, language["quotes"].array(), c),
+    (int c)=>outputQuote(src, language, c, dst));
   possiblyAddAction("line", // The language has line comments.
-    (int c)=>startOfComment(source, language["line"].str(), c),
-    (int c)=>skipLineComment(source, dst));
+    (int c)=>matchSequence(src, language["line"].str(), c),
+    (int c)=>skipLineComment(src, dst));
   possiblyAddAction("block_start", // The language has block comments.
-    (int c)=>startOfComment(source, language["block_start"].str(), c),
-    (int c)=>skipBlockComment(source, language["block_end"].str(), dst));
+    (int c)=>matchSequence(src, language["block_start"].str(), c),
+    (int c)=>skipBlockComment(src, language["block_end"].str(), dst));
   // By default, print the character.
   actions ~= DelegatePair((int c)=>true, (int c)=> cast(void)putc(c, dst));
 
   while(true) {
-    int c = getc(source);
+    int c = getc(src);
     if(c == -1) {
       return;
     }
