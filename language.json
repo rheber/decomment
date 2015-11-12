@@ -1,16 +1,24 @@
 {
   "clang": {
-    "line": "//",
+    "line":        "//",
     "block_start": "/*",
-    "block_end": "*/",
-    "escape": "\\",
-    "quotes": ["'", "\""]
+    "block_end":   "*/",
+    "escape":      "\\",
+    "quotes":      ["'", "\""]
+  },
+
+  "haskell": {
+    "line":       "--",
+    "escape":     "\\",
+    "nest_start": "{-",
+    "nest_end":   "-}",
+    "quotes":     ["'", "\""]
   },
 
   "python": {
-    "line": "#",
+    "line":   "#",
     "escape": "\\",
     "quotes": ["'", "\""],
-    "trip": ["'''", "\"\"\""]
+    "trip":   ["'''", "\"\"\""]
   }
 }
