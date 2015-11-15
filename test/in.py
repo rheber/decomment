@@ -1,10 +1,10 @@
 #python test
 
-# test quotes
-a = '#'
-b = "#"
-c = '''#'''
-d = """#"""
+# test quoting slashes
+a = '\\'
+b = "\\"
+c = '''\\'''
+d = """\\"""
 
 # test quoting quotes
 a = '"'
