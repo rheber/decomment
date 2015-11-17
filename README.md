@@ -4,11 +4,13 @@ Decomment removes comments from source files.
 
 ## Building
 
-If you've installed D you can run `rdmd --build-only decomment`.
+If you've installed D you can run `rdmd --build-only decomment` to produce an
+executable.
 
 ## Usage
 
-For some source file "blorb.foo", run `decomment blorb.foo`.
+For some source file "blorb.foo", run `decomment blorb.foo` if you've built an
+executable, or `rdmd decomment blorb.foo` otherwise.
 
 ## Workflow
 
@@ -20,5 +22,5 @@ To add a new language:
 1. Modify the program logic if necessary to accommodate the new language,
 then run `rdmd -unittest decomment` to ensure previous languages work correctly.
 
-1. Add a test file test/in.foo, run `decomment test/in.foo > test/out.foo`
-and add the corresponding unit test.
+1. Add a test file test/in.foo, run `rdmd decomment test/in.foo > test/out.foo`
+and add the corresponding unit test to decomment.d.
