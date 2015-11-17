@@ -4,14 +4,14 @@
 a = '"'
 b = "'"
 c = '\''
-d = "\"'
+d = "\""
 e = '\\'
 f = "\\"
 
 {- This is a {-nesting-} comment. -}
 
 -- quoting comment sequences
-a' = "--"
-b' = "{-"
+a1 = "--"
+b1 = "{-"
 
 --end of test
