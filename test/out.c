@@ -3,14 +3,14 @@ void
 main(){
   char c = 'c'; 
   
-  char n = '\n';
+  char bs = '\\';
+  char fs = '/';
   char qd = '"';
   char qs = '\'';
-  char s = '/';
 
 
 
-  char* ahoy = "ahoy world!";  char* again = "\n\"'ello again!\"";
+  char* ahoy = "\\ahoy world!\\";  char* again = "\n\"'ello again!\"";
 }
 
 

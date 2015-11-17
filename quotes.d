@@ -22,7 +22,7 @@ outputQuote(FILE* source, in JSONValue[string] language, in int start, FILE* dst
     }
     putc(c, dst);
     if(c == language["escape"].str()[0]) {
-      escaped = true;
+      escaped = !escaped;
     } else if(c == start && !escaped) {
       return;
     } else {
@@ -50,7 +50,7 @@ outputTrip(FILE* src, in JSONValue[string] language, in int start, FILE* dst) {
     }
     putc(c, dst);
     if(c == language["escape"].str()[0]) {
-      escaped = true;
+      escaped = !escaped;
     } else if(c == start && !escaped) {
       // Check next two characters.
       int c2 = getc(src);
