@@ -12,6 +12,9 @@ executable.
 For some source file "blorb.foo", run `decomment blorb.foo` if you've built an
 executable, or `rdmd decomment blorb.foo` otherwise.
 
+If "blorb.foo" is written in some language "frotz" but is not treated as a
+frotz file by default, run `rdmd decomment blorb.foo --lang=frotz`.
+
 ## Workflow
 
 To add a new language:

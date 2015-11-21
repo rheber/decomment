@@ -5,6 +5,7 @@ Main function.
 import std.algorithm.searching;
 import std.exception;
 import std.file;
+import std.getopt;
 import std.json;
 import std.path;
 import std.stdio;
@@ -46,11 +47,24 @@ sourceLanguage(in string ext) {
 
 void
 main(string[] args) {
+  string lang = "";
+  auto getoptData = getopt(
+      args,
+      "language|lang", "The source file's programming language", &lang
+  );
+
   enforce(args.length > 1, "Too few arguments.");
 
   File f = File(args[1], "r");
   JSONValue j = parseJSON(readText("language.json"));
 
-  string ext = extension(args[1]);
-  outputSource(f.getFP(), j[sourceLanguage(ext)].object());
+  try {
+    outputSource(f.getFP(), j[lang].object());
+  } catch(JSONException e) {
+    if(lang != "") {
+      stderr.writef("decomment: Language %s is not defined\n", lang);
+    }
+    string ext = extension(args[1]);
+    outputSource(f.getFP(), j[sourceLanguage(ext)].object());
+  }
 }
