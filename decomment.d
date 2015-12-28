@@ -26,7 +26,8 @@ unittest {
         readText(setExtension("test/out", ext))));
     tmp.rewind();
   }
-  testLanguage(".c"); // clang
+  testLanguage(".c");  // clang
+  testLanguage(".hs"); // haskell
   testLanguage(".py"); // python
 
   tmp.close();

@@ -53,7 +53,7 @@ skipNestingComment(FILE* src, in JSONValue[string] lang, FILE* dst) {
   skip(int level) {
     while(true) {
       int c = getc(src);
-      if(c == _F_EOF) { return; }
+      if(c == -1) { return; }
       if(c == start[0]) {
         c = getc(src);
         if(c == start[1]) {
