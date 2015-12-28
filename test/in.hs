@@ -8,6 +8,8 @@ d = "\""
 e = '\\'
 f = "\\"
 
+{- Here's a comment. -}
+
 {- This is a {-nesting-} comment. -}
 
 -- quoting comment sequences
