@@ -1,43 +1,37 @@
 /*
 Generic functions to match a sequence of characters.
-Consumes matching characters.
 */
 
 import std.json;
 import std.stdio;
 
 bool
-matchSequence(FILE* src, in string seq, in int first) {
+matchSequence(FILE* src, in string seq) {
   int[] nextChars;
-  bool broke;
+  bool mismatch = false;
   int i;
 
-  if(first != seq[0]) { return false; }
-  if(seq.length == 1) { return true; } // Dealt with one character cases.
-
-  // Check the next 2 to n characters of the sequence.
-  nextChars = new int[seq.length-1];
+  nextChars = new int[seq.length];
   for(i=0; i<nextChars.length; i++) {
     nextChars[i] = getc(src);
-    if(nextChars[i] != seq[i+1]) { // Mismatch.
-      broke = true;
+    if(nextChars[i] != seq[i]) {
+      mismatch = true;
+      i++;
       break;
     }
   }
 
-  if(broke) { // Have to put every character back.
-    for(;i>=0;i--) {
-      if(nextChars[i] !=_F_EOF) { ungetc(nextChars[i], src); }
-    }
-    return false;
+  for(i--;i>=0;i--) {  // Put every character back.
+    if(nextChars[i] != -1) { ungetc(nextChars[i], src); }
   }
-  return true; // Match!
+
+  return !mismatch;
 }
 
 bool
-matchAnySequence(FILE* src, in JSONValue[] seqs, in int c) {
+matchAnySequence(FILE* src, in JSONValue[] seqs) {
   foreach(JSONValue j; seqs) {
-    if(matchSequence(src, j.str(), c)) {
+    if(matchSequence(src, j.str())) {
       return true;
     }
   }

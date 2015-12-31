@@ -11,12 +11,13 @@ Assumes escape and quote sequences are one character long and
 quotes begin and end with the same character.
 */
 void
-outputQuote(FILE* source, in JSONValue[string] language, in int start, FILE* dst) {
+outputQuote(FILE* src, in JSONValue[string] language, FILE* dst) {
   bool escaped = false;
 
+  int start = getc(src);
   putc(start, dst);
   while(true) {
-    int c = getc(source);
+    int c = getc(src);
     if(c == -1) {
       return;
     }
@@ -37,11 +38,12 @@ Assumes escape sequences are one character long.
 Assumes all three characters in the quote sequence are equal.
 */
 void
-outputTrip(FILE* src, in JSONValue[string] language, in int start, FILE* dst) {
+outputTrip(FILE* src, in JSONValue[string] language, FILE* dst) {
   bool escaped = false;
+  int start = getc(src);
   putc(start, dst);
-  putc(start, dst);
-  putc(start, dst);
+  putc(getc(src), dst);
+  putc(getc(src), dst);
 
   while(true) {
     int c = getc(src);

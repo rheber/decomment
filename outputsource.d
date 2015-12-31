@@ -17,44 +17,43 @@ outputSource(FILE* src, JSONValue[string] lang,
     FILE* dst = core.stdc.stdio.stdout) {
 
   struct DelegatePair {
-    bool delegate(int) key;
-    void delegate(int) value;
+    bool delegate() key;
+    void delegate() value;
   }
   DelegatePair[] actions;
 
   void
-  possiblyAddAction(string feature, bool delegate(int) k, void delegate(int) v) {
+  possiblyAddAction(string feature, bool delegate() k, void delegate() v) {
     if(feature in lang) {
       actions ~= DelegatePair(k, v);
     }
   }
 
   possiblyAddAction("trip", // The language has Pythonic triple quotes.
-    (int c)=>matchAnySequence(src, lang["trip"].array(), c),
-    (int c)=>outputTrip(src, lang, c, dst));
+    ()=>matchAnySequence(src, lang["trip"].array()),
+    ()=>outputTrip(src, lang, dst));
   possiblyAddAction("quotes", // The language has typical quotes.
-    (int c)=>matchAnySequence(src, lang["quotes"].array(), c),
-    (int c)=>outputQuote(src, lang, c, dst));
+    ()=>matchAnySequence(src, lang["quotes"].array()),
+    ()=>outputQuote(src, lang, dst));
   possiblyAddAction("line", // The language has line comments.
-    (int c)=>matchSequence(src, lang["line"].str(), c),
-    (int c)=>skipLineComment(src, dst));
+    ()=>matchSequence(src, lang["line"].str()),
+    ()=>skipLineComment(src, dst));
   possiblyAddAction("block_start", // The language has block comments.
-    (int c)=>matchSequence(src, lang["block_start"].str(), c),
-    (int c)=>skipBlockComment(src, lang["block_end"].str(), dst));
+    ()=>matchSequence(src, lang["block_start"].str()),
+    ()=>skipBlockComment(src, lang, dst));
   possiblyAddAction("nest_start", //The language has nesting block comments.
-    (int c)=>matchSequence(src, lang["nest_start"].str(), c),
-    (int c)=>skipNestingComment(src, lang, dst));
+    ()=>matchSequence(src, lang["nest_start"].str()),
+    ()=>skipNestingComment(src, lang, dst));
   // By default, print the character.
-  actions ~= DelegatePair((int c)=>true, (int c)=> cast(void)putc(c, dst));
+  actions ~= DelegatePair(()=>true, ()=> cast(void)putc(getc(src), dst));
 
   while(true) {
     int c = getc(src);
-    if(c == -1) {
-      return;
-    }
+    if(c == -1) { return; }
+    ungetc(c, src);
     foreach(DelegatePair d; actions) {
-      if(d.key(c)) {
-        d.value(c);
+      if(d.key()) {
+        d.value();
         break;
       }
     }

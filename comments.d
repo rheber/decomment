@@ -24,13 +24,19 @@ skipLineComment(FILE* src, FILE* dst) {
 Skip to the end of the block comment.
 */
 void
-skipBlockComment(FILE* src, in string endCommentSequence, FILE* dst) {
+skipBlockComment(FILE* src, in JSONValue[string] lang, FILE* dst) {
+  string start = lang["block_start"].str();
+  string end   = lang["block_end"].str();
+
+  int i = start.length;
+  while(i--) { getc(src); } // Skip opening sequence.
+
   while(true) {
     int c = getc(src);
     if(c == -1) { return; }
-    if(c == endCommentSequence[0]) {
+    if(c == end[0]) {
       c = getc(src);
-      if(c == endCommentSequence[1]) {
+      if(c == end[1]) {
         putc(' ', dst); // Allows block comments to separate tokens.
         return;
       } else if(c != -1) {
@@ -50,14 +56,14 @@ skipNestingComment(FILE* src, in JSONValue[string] lang, FILE* dst) {
   string end   = lang["nest_end"].str();
 
   void
-  skip(int level) {
+  skip() {
     while(true) {
       int c = getc(src);
       if(c == -1) { return; }
       if(c == start[0]) {
         c = getc(src);
         if(c == start[1]) {
-          skip(level+1);
+          skip();
         } else if(c != _F_EOF) {
           ungetc(c, src);
         }
@@ -72,6 +78,8 @@ skipNestingComment(FILE* src, in JSONValue[string] lang, FILE* dst) {
     }
   }
 
+  int i = start.length;
+  while(i--) { getc(src); } // Skip first opening sequence.
   putc(' ', dst); // Allow comments to separate tokens.
-  skip(0);
+  skip();
 }
