@@ -3,6 +3,7 @@ Main function.
 */
 
 import std.algorithm.searching;
+import std.datetime;
 import std.exception;
 import std.file;
 import std.getopt;
@@ -17,6 +18,7 @@ unittest {
   File tmp = File("test/temp", "w+");
   tmp.setvbuf(0, _IONBF); // No need to flush after every write.
   FILE* t = tmp.getFP();
+  StopWatch sw;
 
   void
   testLanguage(in string ext) {
@@ -26,9 +28,12 @@ unittest {
         readText(setExtension("test/out", ext))));
     tmp.rewind();
   }
+  sw.start();
   testLanguage(".c");  // clang
   testLanguage(".hs"); // haskell
   testLanguage(".py"); // python
+  sw.stop();
+  printf("Tests completed in %dms\n", sw.peek().msecs);
 
   tmp.close();
   std.file.remove("test/temp");
