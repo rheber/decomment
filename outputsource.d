@@ -6,6 +6,7 @@ import std.json;
 import std.stdio;
 
 import comments;
+import identifiers;
 import matchseq;
 import quotes;
 
@@ -22,6 +23,17 @@ outputSource(FILE* src, JSONValue[string] lang,
   }
   DelegatePair[] actions;
 
+  /* Char types for identifiers. */
+
+  CharTypes firstChar;
+  firstChar.letter = true;
+  firstChar.underscore = true;
+
+  CharTypes nextChars;
+  nextChars.letter = true;
+  nextChars.underscore = true;
+  nextChars.digit = true;
+
   void
   possiblyAddAction(string feature, bool delegate() k, void delegate() v) {
     if(feature in lang) {
@@ -29,12 +41,14 @@ outputSource(FILE* src, JSONValue[string] lang,
     }
   }
 
+  /* Strings */
   possiblyAddAction("trip", // The language has Pythonic triple quotes.
     ()=>matchAnySequence(src, lang["trip"].array()),
     ()=>outputTrip(src, lang, dst));
   possiblyAddAction("quotes", // The language has typical quotes.
     ()=>matchAnySequence(src, lang["quotes"].array()),
     ()=>outputQuote(src, lang, dst));
+  /* Comments */
   possiblyAddAction("line", // The language has line comments.
     ()=>matchSequence(src, lang["line"].str()),
     ()=>skipLineComment(src, dst));
@@ -44,7 +58,10 @@ outputSource(FILE* src, JSONValue[string] lang,
   possiblyAddAction("nest_start", //The language has nesting block comments.
     ()=>matchSequence(src, lang["nest_start"].str()),
     ()=>skipNestingComment(src, lang, dst));
-  // By default, print the character.
+  /* Identifiers */
+  actions ~= DelegatePair(()=>matchchar(src, firstChar),
+                          ()=>printIdentifier(src, nextChars, dst));
+  /* By default, print the character. */
   actions ~= DelegatePair(()=>true, ()=> cast(void)putc(getc(src), dst));
 
   while(true) {
