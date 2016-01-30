@@ -11,7 +11,7 @@ struct CharTypes {
     bool, "letter", 1,
     bool, "underscore", 1,
     bool, "digit", 1,
-    bool, "bang", 1,
+    bool, "quote", 1,
     bool, "", 4 /* padding */
   ));
 }
@@ -28,7 +28,7 @@ matchchar(FILE* src, CharTypes ct) {
   if(ct.letter)     { matched |= isAlpha(c); }
   if(ct.underscore) { matched |= (c == '_'); }
   if(ct.digit)      { matched |= isDigit(c); }
-  if(ct.bang)       { matched |= (c == '!'); }
+  if(ct.quote)      { matched |= (c == '\''); }
 
   ungetc(c, src);
   return matched;

@@ -10,6 +10,7 @@
   "haskell": {
     "line":       "--",
     "escape":     "\\",
+    "id_end":     "'",
     "nest_start": "{-",
     "nest_end":   "-}",
     "quotes":     ["'", "\""]

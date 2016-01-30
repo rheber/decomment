@@ -33,6 +33,9 @@ outputSource(FILE* src, JSONValue[string] lang,
   nextChars.letter = true;
   nextChars.underscore = true;
   nextChars.digit = true;
+  if("id_end" in lang) { /* kludgy */
+    nextChars.quote = true;
+  }
 
   void
   possiblyAddAction(string feature, bool delegate() k, void delegate() v) {
